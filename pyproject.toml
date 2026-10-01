@@ -1,11 +1,21 @@
 [project]
-name = "bizassist"
+name = "bizassist_ai"
 version = "0.1.0"
 description = "RAG-based AI Business Knowledge & Customer Support Assistant"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "fastapi[standard]>=0.142.2",
+    "uvicorn>=0.54.0",
+    "pydantic-settings>=2.0.0",
+]
 
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+
+[tool.uv]
+package = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bizassist_ai"]
