@@ -1,0 +1,42 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+
+# ===== Virtual Environment =====
+.venv/
+venv/
+ENV/
+env/
+
+# ===== Environment Variables (SECRETS!) =====
+.env
+.env.local
+.env.*.local
+
+# ===== Data =====
+data/*
+!data/.gitkeep
+*.faiss
+*.index
+
+# ===== VS Code =====
+.vscode/
+
+# ===== Testing =====
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== Logs =====
+*.log
+logs/
