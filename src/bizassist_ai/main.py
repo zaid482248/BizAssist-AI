@@ -17,6 +17,7 @@ from bizassist_ai.core.validators import (
     validate_size,
 )
 
+from bizassist_ai.core.chunking import chunk_text
 
 # ---------- Logging Setup ----------
 
@@ -175,4 +176,67 @@ async def upload_document(file: UploadFile = File(...)):
         text_length=len(text),
         preview=preview,
         message=f"File '{clean_name}' upload aur extract ho gayi.",
+    )
+    
+     
+# ---------- Chunking Test Models ----------
+
+class ChunkRequest(BaseModel):
+    """Chunking request."""
+    text: str = Field(..., min_length=1)
+    chunk_size: int = Field(default=800, ge=100, le=5000)
+    overlap: int = Field(default=100, ge=0, le=500)
+
+
+class ChunkInfo(BaseModel):
+    """Ek chunk ka info."""
+    index: int
+    text: str
+    length: int
+    start_char: int
+    end_char: int
+
+
+class ChunkResponse(BaseModel):
+    """Chunking response."""
+    status: str
+    total_chunks: int
+    original_length: int
+    chunks: list[ChunkInfo]
+
+
+# ---------- Chunking Test Endpoint ----------
+
+@app.post("/chunk", response_model=ChunkResponse)
+async def chunk_endpoint(request: ChunkRequest):
+    """
+    Text ko chunks mein todta hai (testing ke liye).
+    Phase 7 mein yeh internally use hoga.
+    """
+    try:
+        chunks = chunk_text(
+            text=request.text,
+            chunk_size=request.chunk_size,
+            overlap=request.overlap,
+        )
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+
+    return ChunkResponse(
+        status="success",
+        total_chunks=len(chunks),
+        original_length=len(request.text),
+        chunks=[
+            ChunkInfo(
+                index=c.index,
+                text=c.text,
+                length=len(c.text),
+                start_char=c.start_char,
+                end_char=c.end_char,
+            )
+            for c in chunks
+        ],
     )
